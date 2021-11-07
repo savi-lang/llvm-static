@@ -1,0 +1,80 @@
+task:
+  # Give a long timeout because when we have cache misses, this task is long.
+  timeout_in: 120m
+
+  # We need extra CPU and memory to get through this harrowing LLVM build.
+  container:
+    cpu: 8
+    memory: 4
+
+  environment:
+    GITHUB_API_TOKEN: ENCRYPTED[df28a2928d936fa65f97e38a3f2e9fe210f456a3a8ac926896b38eac4b66f8364822593cfd4e69865db5e9fb397472cf]
+    CC: clang
+    CXX: clang++
+
+  matrix:
+    - name: x86_64-unknown-linux-gnu
+      container:
+        image: ubuntu:21.04
+      environment:
+        TRIPLE: x86_64-unknown-linux-gnu
+        DEPS_INSTALL: "\
+          apt-get update && \
+          apt-get install -y --no-install-recommends \
+            apt-transport-https ca-certificates \
+            curl xz-utils clang make cmake python3"
+        # Without this next environment var, apt-get will try to ask us
+        # interactive questions, to which we will be unable to respond...
+        DEBIAN_FRONTEND: noninteractive
+
+    - name: x86_64-unknown-linux-musl
+      environment:
+        TRIPLE: x86_64-unknown-linux-musl
+        DEPS_INSTALL: "\
+          apk add --no-cache --update \
+            bash curl coreutils alpine-sdk \
+            gcc g++ clang-dev lld xz make cmake linux-headers python3"
+      container:
+        image: alpine:edge # TODO: use alpine:3.15 or newest stable release when available
+
+    # TODO: FreeBSD
+
+    - name: x86_64-apple-macosx
+      environment:
+        TRIPLE: x86_64-apple-macosx
+        DEPS_INSTALL: brew install make cmake
+        SDKROOT: /Applications/Xcode-12.5.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+      macos_instance:
+        image: big-sur-xcode-12.5
+
+    # TODO: arm64-apple-macos
+
+  os_info_script:
+    - uname
+    - uname -m
+    - uname -a
+
+  deps_script:
+    - echo "${DEPS_INSTALL}"
+    - sh -c "${DEPS_INSTALL}"
+
+  lib_llvm_cache:
+    folder: lib/llvm
+    fingerprint_script: make llvm-ci-cache-key
+    populate_script: make llvm
+  upload_caches: [lib_llvm]
+
+  archive_script:
+    - tar -czvf /tmp/llvm.tar.gz -C lib/llvm .
+
+  publish_if_release_script:
+    - >-
+      sh -c '
+        test -z "${CIRRUS_RELEASE}" || \
+          curl -v --fail -X POST \
+            -H "Authorization: token ${GITHUB_API_TOKEN}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Content-Type: application/octet-stream" \
+            --data-binary @/tmp/llvm.tar.gz \
+            "https://uploads.github.com/repos/$CIRRUS_REPO_FULL_NAME/releases/$CIRRUS_RELEASE/assets?name=${TRIPLE}-llvm-static.tar.gz" \
+      '
