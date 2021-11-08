@@ -8,9 +8,6 @@ LLVM_CACHE_BUSTER_DATE=20211107a
 # By default, use all cores available except one, so things stay responsive.
 NUM_THREADS?=$(shell expr `getconf _NPROCESSORS_ONLN 2>/dev/null` - 1)
 
-# Get the absolute root directory where this Makefile is located.
-ROOT=$(abspath $(dir $(lastword $(MAKEFILE_LIST))))
-
 PHONY:
 
 # Download the LLVM project source code.
@@ -33,7 +30,7 @@ $(LLVM_RELEASE_DIR)/build/CMakeCache.txt: $(LLVM_RELEASE_DIR)
 	mkdir -p $(LLVM_RELEASE_DIR)/build
 	cd $(LLVM_RELEASE_DIR)/build && env CC=clang CXX=clang++ cmake \
 		-DCMAKE_BUILD_TYPE=Release \
-		-DCMAKE_INSTALL_PREFIX=$(ROOT)/$(LLVM_INSTALL_DIR) \
+		-DCMAKE_INSTALL_PREFIX=$(shell pwd)/$(LLVM_INSTALL_DIR) \
 		-DCMAKE_OSX_ARCHITECTURES='x86_64;arm64' \
 		-DLLVM_ENABLE_BINDINGS=OFF \
 		-DLLVM_ENABLE_LIBXML2=OFF \
