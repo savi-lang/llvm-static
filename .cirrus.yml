@@ -3,14 +3,15 @@ task:
   timeout_in: 120m
 
   # We need extra CPU and memory to get through this harrowing LLVM build.
-  container:
+  container: &hardware_spec
     cpu: 8
-    memory: 4
+    memory: 8
 
   environment:
     GITHUB_API_TOKEN: ENCRYPTED[df28a2928d936fa65f97e38a3f2e9fe210f456a3a8ac926896b38eac4b66f8364822593cfd4e69865db5e9fb397472cf]
     CC: clang
     CXX: clang++
+    NUM_THREADS: 8
 
   matrix:
     - name: x86_64-unknown-linux-gnu
@@ -37,17 +38,25 @@ task:
       container:
         image: alpine:edge # TODO: use alpine:3.15 or newest stable release when available
 
-    # TODO: FreeBSD
+    - name: x86_64-unknown-freebsd
+      environment:
+        TRIPLE: x86_64-unknown-freebsd
+        DEPS_INSTALL: "\
+          pkg update && pkg install -y \
+            cmake gmake curl git llvm python3"
+      freebsd_instance:
+        image: freebsd-13-0-release-amd64
+        <<: *hardware_spec
 
     - name: x86_64-apple-macosx
       environment:
         TRIPLE: x86_64-apple-macosx
         DEPS_INSTALL: brew install make cmake
+        # Set up the SDKROOT path specific to the present XCode version.
         SDKROOT: /Applications/Xcode-12.5.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
       macos_instance:
         image: big-sur-xcode-12.5
 
-    # TODO: arm64-apple-macos
 
   os_info_script:
     - uname
@@ -61,7 +70,7 @@ task:
   lib_llvm_cache:
     folder: lib/llvm
     fingerprint_script: make llvm-ci-cache-key
-    populate_script: make llvm
+    populate_script: make llvm NUM_THREADS=${NUM_THREADS}
   upload_caches: [lib_llvm]
 
   archive_script:

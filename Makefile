@@ -5,8 +5,8 @@ LLVM_RELEASE_DIR=lib/llvm-$(LLVM_VERSION)
 LLVM_INSTALL_DIR=lib/llvm
 LLVM_CACHE_BUSTER_DATE=20211107a
 
-# Use all cores available except one, so the system stays responsive.
-NUM_CORES=$(shell expr `getconf _NPROCESSORS_ONLN` - 1)
+# By default, use all cores available except one, so things stay responsive.
+NUM_THREADS?=$(shell expr `getconf _NPROCESSORS_ONLN 2>/dev/null` - 1)
 
 # Get the absolute root directory where this Makefile is located.
 ROOT=$(abspath $(dir $(lastword $(MAKEFILE_LIST))))
@@ -53,7 +53,7 @@ $(LLVM_RELEASE_DIR)/build/CMakeCache.txt: $(LLVM_RELEASE_DIR)
 # Build an install LLVM to the relative install path, so it's ready to use.
 llvm: $(LLVM_RELEASE_DIR)/build/CMakeCache.txt
 	mkdir -p $(LLVM_INSTALL_DIR)
-	make -C $(LLVM_RELEASE_DIR)/build -j$(NUM_CORES) install
+	make -C $(LLVM_RELEASE_DIR)/build -j$(NUM_THREADS) install
 
 # The output of this command is used by Cirrus CI as a cache key,
 # so that it can know when to invalidate the cache.
