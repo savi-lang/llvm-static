@@ -3,7 +3,7 @@ LLVM_DOWNLOAD_URL="https://github.com/llvm/llvm-project/releases/download/llvmor
 LLVM_SOURCE_ARCHIVE=lib/llvm-$(LLVM_VERSION).src.tar.gz
 LLVM_RELEASE_DIR=lib/llvm-$(LLVM_VERSION)
 LLVM_INSTALL_DIR=lib/llvm
-LLVM_CACHE_BUSTER_DATE=20211108a
+LLVM_CACHE_BUSTER_DATE=20211109a
 
 # By default, use all cores available except one, so things stay responsive.
 NUM_THREADS?=$(shell expr `getconf _NPROCESSORS_ONLN 2>/dev/null` - 1)
@@ -49,9 +49,17 @@ $(LLVM_RELEASE_DIR)/build/CMakeCache.txt: $(LLVM_RELEASE_DIR)
 		../llvm
 
 # Build an install LLVM to the relative install path, so it's ready to use.
+# Then remove all the unnecessary parts we don't need to put in our bundle.
+# We remove everything except the static libs and the llvm-config executable.
 llvm: $(LLVM_RELEASE_DIR)/build/CMakeCache.txt
 	mkdir -p $(LLVM_INSTALL_DIR)
 	make -C $(LLVM_RELEASE_DIR)/build -j$(NUM_THREADS) install
+	rm -r $(LLVM_INSTALL_DIR)/share/
+	rm -r $(LLVM_INSTALL_DIR)/include/
+	rm -r $(LLVM_INSTALL_DIR)/lib/clang/
+	rm -r $(LLVM_INSTALL_DIR)/lib/cmake/
+	rm -r $(LLVM_INSTALL_DIR)/libexec/
+	rm `ls -rtd $(LLVM_INSTALL_DIR)/bin/* | grep -v llvm-config`
 
 # The output of this command is used by Cirrus CI as a cache key,
 # so that it can know when to invalidate the cache.
