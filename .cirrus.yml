@@ -16,7 +16,7 @@ task:
   matrix:
     - name: x86_64-unknown-linux-gnu
       container:
-        image: ubuntu:21.04
+        image: ubuntu:20.04
       environment:
         TRIPLE: x86_64-unknown-linux-gnu
         DEPS_INSTALL: "\

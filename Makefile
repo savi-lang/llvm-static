@@ -3,7 +3,7 @@ LLVM_DOWNLOAD_URL="https://github.com/llvm/llvm-project/releases/download/llvmor
 LLVM_SOURCE_ARCHIVE=lib/llvm-$(LLVM_VERSION).src.tar.gz
 LLVM_RELEASE_DIR=lib/llvm-$(LLVM_VERSION)
 LLVM_INSTALL_DIR=lib/llvm
-LLVM_CACHE_BUSTER_DATE=20211109b
+LLVM_CACHE_BUSTER_DATE=20211111
 
 # By default, use all cores available except one, so things stay responsive.
 NUM_THREADS?=$(shell expr `getconf _NPROCESSORS_ONLN 2>/dev/null` - 1)
