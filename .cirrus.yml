@@ -59,6 +59,24 @@ task:
       macos_instance:
         image: big-sur-xcode-12.5
 
+    - name: x86_64-unknown-linux-gnu-for-p2
+      container:
+        image: ubuntu:20.04
+      environment:
+        TRIPLE: x86_64-unknown-linux-gnu
+        VARIANT: -for-p2
+        # TODO: Somehow get P2 into upstream LLVM.
+        MAKE_EXTRA_ARGS: "\
+          LLVM_DOWNLOAD_URL='https://github.com/savi-lang/p2-llvm-project/archive/refs/tags/test-20201203.tar.gz' \
+          LLVM_BUILD_ARGS='-DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=P2 -DLLVM_TARGETS_TO_BUILD='"
+        DEPS_INSTALL: "\
+          apt-get update && \
+          apt-get install -y --no-install-recommends \
+            apt-transport-https ca-certificates \
+            curl xz-utils clang make cmake python3"
+        # Without this next environment var, apt-get will try to ask us
+        # interactive questions, to which we will be unable to respond...
+        DEBIAN_FRONTEND: noninteractive
 
   os_info_script:
     - uname
@@ -71,8 +89,8 @@ task:
 
   lib_llvm_cache:
     folder: lib/llvm
-    fingerprint_script: make llvm-ci-cache-key
-    populate_script: make llvm NUM_THREADS=${NUM_THREADS}
+    fingerprint_script: make llvm-ci-cache-key && printf -- "${VARIANT}"
+    populate_script: sh -c "make llvm NUM_THREADS=${NUM_THREADS} ${MAKE_EXTRA_ARGS}"
   upload_caches: [lib_llvm]
 
   archive_script:
@@ -87,5 +105,5 @@ task:
             -H "Accept: application/vnd.github.v3+json" \
             -H "Content-Type: application/octet-stream" \
             --data-binary @/tmp/llvm.tar.gz \
-            "https://uploads.github.com/repos/$CIRRUS_REPO_FULL_NAME/releases/$CIRRUS_RELEASE/assets?name=${TRIPLE}-llvm-static.tar.gz" \
+            "https://uploads.github.com/repos/$CIRRUS_REPO_FULL_NAME/releases/$CIRRUS_RELEASE/assets?name=${TRIPLE}${VARIANT}-llvm-static.tar.gz" \
       '
