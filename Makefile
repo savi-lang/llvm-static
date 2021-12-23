@@ -5,6 +5,7 @@ LLVM_SOURCE_ARCHIVE=lib/llvm-$(LLVM_VERSION).src.tar.gz
 LLVM_RELEASE_DIR=lib/llvm-$(LLVM_VERSION)
 LLVM_INSTALL_DIR=lib/llvm
 LLVM_CACHE_BUSTER_DATE=20211203
+PWD?=$(shell pwd)
 
 # By default, use all cores available except one, so things stay responsive.
 NUM_THREADS?=$(shell expr `getconf _NPROCESSORS_ONLN 2>/dev/null` - 1)
@@ -31,7 +32,7 @@ $(LLVM_RELEASE_DIR)/build/CMakeCache.txt: $(LLVM_RELEASE_DIR)
 	mkdir -p $(LLVM_RELEASE_DIR)/build
 	cd $(LLVM_RELEASE_DIR)/build && env CC=clang CXX=clang++ cmake \
 		-DCMAKE_BUILD_TYPE=Release \
-		-DCMAKE_INSTALL_PREFIX=$(shell pwd)/$(LLVM_INSTALL_DIR) \
+		-DCMAKE_INSTALL_PREFIX=$(PWD)/$(LLVM_INSTALL_DIR) \
 		-DCMAKE_OSX_ARCHITECTURES='x86_64;arm64' \
 		-DLIBCLANG_BUILD_STATIC=ON \
 		-DLLVM_ENABLE_BINDINGS=OFF \
