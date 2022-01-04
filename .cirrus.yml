@@ -40,12 +40,13 @@ task:
 
     - name: arm64-unknown-linux-musl
       environment:
+        INDIVIDUAL_CACHE_BUST_DATE: 20220103 # TODO: remove this on next full cache bust in Makefile
         TRIPLE: arm64-unknown-linux-musl
         DEPS_INSTALL: "\
           apk add --no-cache --update \
             bash curl coreutils alpine-sdk \
             gcc g++ clang-dev lld xz make cmake linux-headers python3"
-      container:
+      arm_container:
         image: alpine:3.15
 
     - name: x86_64-unknown-freebsd
@@ -97,7 +98,7 @@ task:
 
   lib_llvm_cache:
     folder: lib/llvm
-    fingerprint_script: make llvm-ci-cache-key && printf -- "${VARIANT}"
+    fingerprint_script: make llvm-ci-cache-key && printf -- "${VARIANT}${INDIVIDUAL_CACHE_BUST_DATE}"
     populate_script: sh -c "make llvm NUM_THREADS=${NUM_THREADS} PWD=$(pwd) ${MAKE_EXTRA_ARGS}"
   upload_caches: [lib_llvm]
 
