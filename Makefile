@@ -4,7 +4,7 @@ LLVM_BUILD_ARGS?=""
 LLVM_SOURCE_ARCHIVE=lib/llvm-$(LLVM_VERSION).src.tar.gz
 LLVM_RELEASE_DIR=lib/llvm-$(LLVM_VERSION)
 LLVM_INSTALL_DIR=lib/llvm
-LLVM_CACHE_BUSTER_DATE=20211203
+LLVM_CACHE_BUSTER_DATE=20220103
 PWD?=$(shell pwd)
 
 # By default, use all cores available except one, so things stay responsive.
