@@ -41,7 +41,6 @@ task:
 
     - name: arm64-unknown-linux-musl
       environment:
-        INDIVIDUAL_CACHE_BUST_DATE: 20220103 # TODO: remove this on next full cache bust in Makefile
         TRIPLE: arm64-unknown-linux-musl
         DEPS_INSTALL: "\
           apk add --no-cache --update \
