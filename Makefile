@@ -4,7 +4,7 @@ LLVM_BUILD_ARGS?=""
 LLVM_SOURCE_ARCHIVE=lib/llvm-$(LLVM_VERSION).src.tar.gz
 LLVM_RELEASE_DIR=lib/llvm-$(LLVM_VERSION)
 LLVM_INSTALL_DIR=lib/llvm
-LLVM_CACHE_BUSTER_DATE=20220103
+LLVM_CACHE_BUSTER_DATE=20220104
 PWD?=$(shell pwd)
 
 # By default, use all cores available except one, so things stay responsive.
@@ -37,7 +37,7 @@ $(LLVM_RELEASE_DIR)/build/CMakeCache.txt: $(LLVM_RELEASE_DIR)
 		-DLIBCLANG_BUILD_STATIC=ON \
 		-DLLVM_ENABLE_BINDINGS=OFF \
 		-DLLVM_ENABLE_LIBXML2=OFF \
-		-DLLVM_ENABLE_LTO=ON \
+		-DLLVM_ENABLE_LTO=OFF \
 		-DLLVM_ENABLE_OCAMLDOC=OFF \
 		-DLLVM_ENABLE_PIC=OFF \
 		-DLLVM_ENABLE_PROJECTS='clang;lld' \
@@ -62,7 +62,7 @@ llvm: $(LLVM_RELEASE_DIR)/build/CMakeCache.txt
 	rm -r $(LLVM_INSTALL_DIR)/lib/clang/
 	rm -r $(LLVM_INSTALL_DIR)/lib/cmake/
 	rm -r $(LLVM_INSTALL_DIR)/libexec/
-	rm `ls -rtd $(LLVM_INSTALL_DIR)/bin/* | grep -v llvm-config | grep -v llc | grep -v clang`
+	rm `ls -rtd $(LLVM_INSTALL_DIR)/bin/* | grep -v llvm-config | grep -v llc | grep -v clang | grep -v lld`
 
 # The output of this command is used by Cirrus CI as a cache key,
 # so that it can know when to invalidate the cache.
