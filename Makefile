@@ -64,7 +64,7 @@ llvm: $(LLVM_RELEASE_DIR)/build/CMakeCache.txt
 	rm -r $(LLVM_INSTALL_DIR)/lib/cmake/
 	rm -r $(LLVM_INSTALL_DIR)/libexec/
 	rm `ls -rtd $(LLVM_INSTALL_DIR)/bin/* | grep -v llvm-config | grep -v llc | grep -v clang | grep -v lld`
-	rm `ls $(LLVM_INSTALL_DIR)/bin/ | grep clang- | grep -v -E 'clang-[0-9]+'`
+	rm `ls -rtd $(LLVM_INSTALL_DIR)/bin/* | grep clang- | grep -v -E 'clang-[0-9]+'`
 
 # The output of this command is used by Cirrus CI as a cache key,
 # so that it can know when to invalidate the cache.
