@@ -23,7 +23,7 @@ task:
           apt-get update && \
           apt-get install -y --no-install-recommends \
             apt-transport-https ca-certificates \
-            curl xz-utils clang make cmake python3"
+            curl xz-utils clang make cmake python3 zlib1g-dev"
         # Without this next environment var, apt-get will try to ask us
         # interactive questions, to which we will be unable to respond...
         DEBIAN_FRONTEND: noninteractive
@@ -33,7 +33,7 @@ task:
         TRIPLE: x86_64-unknown-linux-musl
         DEPS_INSTALL: "\
           apk add --no-cache --update \
-            bash curl coreutils alpine-sdk \
+            bash curl coreutils alpine-sdk zlib-static \
             gcc g++ clang-dev lld xz make cmake linux-headers python3"
       container:
         image: alpine:3.15
@@ -44,7 +44,7 @@ task:
         TRIPLE: arm64-unknown-linux-musl
         DEPS_INSTALL: "\
           apk add --no-cache --update \
-            bash curl coreutils alpine-sdk \
+            bash curl coreutils alpine-sdk zlib-static \
             gcc g++ clang-dev lld xz make cmake linux-headers python3"
       arm_container:
         image: alpine:3.15
@@ -63,7 +63,7 @@ task:
     - name: x86_64-apple-macosx
       environment:
         TRIPLE: x86_64-apple-macosx
-        DEPS_INSTALL: brew install make cmake
+        DEPS_INSTALL: brew install make cmake zlib
         # Set up the SDKROOT path specific to the present XCode version.
         SDKROOT: /Applications/Xcode-12.5.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
       macos_instance:
@@ -83,7 +83,7 @@ task:
           apt-get update && \
           apt-get install -y --no-install-recommends \
             apt-transport-https ca-certificates \
-            curl xz-utils clang make cmake python3"
+            curl xz-utils clang make cmake python3 zlib1g-dev"
         # Without this next environment var, apt-get will try to ask us
         # interactive questions, to which we will be unable to respond...
         DEBIAN_FRONTEND: noninteractive
