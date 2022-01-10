@@ -45,7 +45,7 @@ $(LLVM_RELEASE_DIR)/build/CMakeCache.txt: $(LLVM_RELEASE_DIR)
 		-DLLVM_ENABLE_WARNINGS=OFF \
 		-DLLVM_ENABLE_Z3_SOLVER=OFF \
 		-DLLVM_ENABLE_ZLIB=FORCE_ON \
-		-DZLIB_LIBRARY=$(shell find /lib /usr /opt -name libz.a | head -n 1) \
+		-DZLIB_LIBRARY=$(shell find /lib /opt /usr -name libz.a | head -n 1) \
 		-DLLVM_HAVE_LIBXAR=OFF \
 		-DLLVM_INCLUDE_BENCHMARKS=OFF \
 		-DLLVM_INCLUDE_TESTS=OFF \
