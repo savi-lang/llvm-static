@@ -64,6 +64,7 @@ task:
       environment:
         TRIPLE: x86_64-apple-macosx
         DEPS_INSTALL: brew install make cmake zlib
+        MAKE_EXTRA_ARGS: ZLIB_LIBRARY=/usr/local/Cellar/zlib/1.2.11/lib/libz.a
         # Set up the SDKROOT path specific to the present XCode version.
         SDKROOT: /Applications/Xcode-12.5.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
       macos_instance:

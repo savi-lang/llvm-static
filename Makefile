@@ -5,6 +5,7 @@ LLVM_SOURCE_ARCHIVE=lib/llvm-$(LLVM_VERSION).src.tar.gz
 LLVM_RELEASE_DIR=lib/llvm-$(LLVM_VERSION)
 LLVM_INSTALL_DIR=lib/llvm
 LLVM_CACHE_BUSTER_DATE=20220109
+ZLIB_LIBRARY?=$(shell find /lib /opt /usr -name libz.a | head -n 1)
 PWD?=$(shell pwd)
 
 # By default, use all cores available except one, so things stay responsive.
@@ -45,7 +46,7 @@ $(LLVM_RELEASE_DIR)/build/CMakeCache.txt: $(LLVM_RELEASE_DIR)
 		-DLLVM_ENABLE_WARNINGS=OFF \
 		-DLLVM_ENABLE_Z3_SOLVER=OFF \
 		-DLLVM_ENABLE_ZLIB=FORCE_ON \
-		-DZLIB_LIBRARY=$(shell find /lib /opt /usr -name libz.a | head -n 1) \
+		-DZLIB_LIBRARY="$(ZLIB_LIBRARY)" \
 		-DLLVM_HAVE_LIBXAR=OFF \
 		-DLLVM_INCLUDE_BENCHMARKS=OFF \
 		-DLLVM_INCLUDE_TESTS=OFF \
