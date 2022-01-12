@@ -6,7 +6,7 @@ LLVM_RELEASE_DIR=lib/llvm-$(LLVM_VERSION)
 LLVM_INSTALL_DIR=lib/llvm
 LLVM_CACHE_BUSTER_DATE=20220109
 ZLIB_LIBRARY?=$(shell find /lib /opt /usr -name libz.a | head -n 1)
-ZLIB_INCLUDE_DIR?=
+ZLIB_INCLUDE_DIR?=$(shell find /usr /opt -name zlib.h | head -n 1 | xargs dirname)
 PWD?=$(shell pwd)
 
 # By default, use all cores available except one, so things stay responsive.
