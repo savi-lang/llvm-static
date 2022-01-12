@@ -63,9 +63,16 @@ task:
     - name: x86_64-apple-macosx
       environment:
         TRIPLE: x86_64-apple-macosx
-        DEPS_INSTALL: brew install make cmake zlib
+        DEPS_INSTALL: " \
+          brew install make cmake zlib && \
+          mkdir /tmp/arm64 && \
+          brew fetch --bottle-tag=arm64_big_sur zlib && \
+          tar -xvf `brew --cache --bottle-tag=arm64_big_sur zlib` -C /tmp/arm64 --strip-components=2 && \
+          lipo -create /tmp/arm64/lib/libz.a /usr/local/opt/zlib/lib/libz.a -output /tmp/libz.a && \
+          echo Done!
+          "
         MAKE_EXTRA_ARGS: " \
-          ZLIB_LIBRARY=/usr/local/opt/zlib/lib/libz.a \
+          ZLIB_LIBRARY=/tmp/libz.a \
           ZLIB_INCLUDE_DIR=/usr/local/opt/zlib/include \
           "
         # Set up the SDKROOT path specific to the present XCode version.
