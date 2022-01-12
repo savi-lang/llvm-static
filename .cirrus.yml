@@ -87,24 +87,24 @@ task:
       brew_usr_local_cache:
         folder: "/usr/local/Homebrew"
 
-    - name: x86_64-unknown-linux-gnu-for-p2
-      container:
-        image: ubuntu:20.04
-      environment:
-        TRIPLE: x86_64-unknown-linux-gnu
-        VARIANT: -for-p2
-        # TODO: Somehow get P2 into upstream LLVM.
-        MAKE_EXTRA_ARGS: "\
-          LLVM_DOWNLOAD_URL='https://github.com/savi-lang/p2-llvm-project/archive/refs/tags/test-20201203.tar.gz' \
-          LLVM_BUILD_ARGS='-DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=P2 -DLLVM_TARGETS_TO_BUILD='"
-        DEPS_INSTALL: "\
-          apt-get update && \
-          apt-get install -y --no-install-recommends \
-            apt-transport-https ca-certificates \
-            curl xz-utils clang make cmake python3 zlib1g-dev"
-        # Without this next environment var, apt-get will try to ask us
-        # interactive questions, to which we will be unable to respond...
-        DEBIAN_FRONTEND: noninteractive
+    # - name: x86_64-unknown-linux-gnu-for-p2
+    #   container:
+    #     image: ubuntu:20.04
+    #   environment:
+    #     TRIPLE: x86_64-unknown-linux-gnu
+    #     VARIANT: -for-p2
+    #     # TODO: Somehow get P2 into upstream LLVM.
+    #     MAKE_EXTRA_ARGS: "\
+    #       LLVM_DOWNLOAD_URL='https://github.com/savi-lang/p2-llvm-project/archive/refs/tags/test-20201203.tar.gz' \
+    #       LLVM_BUILD_ARGS='-DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=P2 -DLLVM_TARGETS_TO_BUILD='"
+    #     DEPS_INSTALL: "\
+    #       apt-get update && \
+    #       apt-get install -y --no-install-recommends \
+    #         apt-transport-https ca-certificates \
+    #         curl xz-utils clang make cmake python3 zlib1g-dev"
+    #     # Without this next environment var, apt-get will try to ask us
+    #     # interactive questions, to which we will be unable to respond...
+    #     DEBIAN_FRONTEND: noninteractive
 
   os_info_script:
     - uname
