@@ -11,6 +11,7 @@ task:
     GITHUB_API_TOKEN: ENCRYPTED[df28a2928d936fa65f97e38a3f2e9fe210f456a3a8ac926896b38eac4b66f8364822593cfd4e69865db5e9fb397472cf]
     CC: clang
     CXX: clang++
+    MAKE: make
     NUM_THREADS: 8
 
   matrix:
@@ -56,6 +57,9 @@ task:
         DEPS_INSTALL: "\
           pkg update && pkg install -y \
             cmake gmake curl git llvm python3"
+        # Without this next environment variable, FreeBSD will run a non-GNU
+        # version of `make` that doesn't interpret our `Makefile` correctly.
+        MAKE: gmake
       freebsd_instance:
         image: freebsd-13-0-release-amd64
         <<: *hardware_spec
@@ -117,8 +121,8 @@ task:
 
   lib_llvm_cache:
     folder: lib/llvm
-    fingerprint_script: make llvm-ci-cache-key && printf -- "${VARIANT}${INDIVIDUAL_CACHE_BUST_DATE}"
-    populate_script: sh -c "make llvm NUM_THREADS=${NUM_THREADS} PWD=$(pwd) ${MAKE_EXTRA_ARGS}"
+    fingerprint_script: ${MAKE} llvm-ci-cache-key && printf -- "${VARIANT}${INDIVIDUAL_CACHE_BUST_DATE}"
+    populate_script: sh -c "${MAKE} llvm NUM_THREADS=${NUM_THREADS} PWD=$(pwd) ${MAKE_EXTRA_ARGS}"
   upload_caches: [lib_llvm]
 
   archive_script:
