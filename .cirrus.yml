@@ -61,29 +61,29 @@ task:
         # version of `make` that doesn't interpret our `Makefile` correctly.
         MAKE: gmake
       freebsd_instance:
-        image: freebsd-13-0-release-amd64
+        image: freebsd-13-1-release-amd64
         <<: *hardware_spec
 
-    - name: x86_64-apple-macosx
+    - name: arm64-apple-macosx
       environment:
-        TRIPLE: x86_64-apple-macosx
+        TRIPLE: arm64-apple-macosx
         DEPS_INSTALL: " \
           brew update --preinstall && brew install make cmake zlib && brew cleanup && \
-          mkdir /tmp/arm64 && \
-          brew fetch --bottle-tag=arm64_big_sur zlib && \
-          tar -xvf `brew --cache --bottle-tag=arm64_big_sur zlib` -C /tmp/arm64 --strip-components=2 && \
-          lipo -create /tmp/arm64/lib/libz.a /usr/local/opt/zlib/lib/libz.a -output /tmp/libz.a && \
+          mkdir /tmp/x86_64 && \
+          brew fetch --bottle-tag=ventura zlib && \
+          tar -xvf `brew --cache --bottle-tag=ventura zlib` -C /tmp/x86_64 --strip-components=2 && \
+          lipo -create /tmp/x86_64/lib/libz.a /opt/homebrew/opt/zlib/lib/libz.a -output /tmp/libz.a && \
           echo Done!
           "
         MAKE_EXTRA_ARGS: " \
           ZLIB_LIBRARY=/tmp/libz.a \
-          ZLIB_INCLUDE_DIR=/usr/local/opt/zlib/include \
+          ZLIB_INCLUDE_DIR=/opt/homebrew/opt/zlib/include \
           "
         # Set up the SDKROOT path specific to the present XCode version.
-        SDKROOT: /Applications/Xcode-12.5.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+        SDKROOT: /Applications/Xcode-14.2.0.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
         HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: "1" # optimizes brew install
       macos_instance:
-        image: big-sur-xcode-12.5
+        image: ghcr.io/cirruslabs/macos-ventura-xcode:14.2
       # Caching some homebrew directories helps save some of the otherwise huge
       # amount of time that it takes to update brew from the CI base image.
       brew_cache:

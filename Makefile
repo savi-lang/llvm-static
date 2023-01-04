@@ -1,11 +1,11 @@
-LLVM_VERSION=14.0.3
+LLVM_VERSION=15.0.6
 LLVM_DOWNLOAD_URL?="https://github.com/llvm/llvm-project/releases/download/llvmorg-$(LLVM_VERSION)/llvm-project-$(LLVM_VERSION).src.tar.xz"
 LLVM_BUILD_ARGS?=""
 LLVM_SOURCE_ARCHIVE=lib/llvm-$(LLVM_VERSION).src.tar.xz
 LLVM_RELEASE_DIR=lib/llvm-$(LLVM_VERSION)
 LLVM_INSTALL_DIR=lib/llvm
-LLVM_CACHE_BUSTER_DATE=20220109
-ZLIB_LIBRARY?=$(shell find /lib /opt /usr -name libz.a | head -n 1)
+LLVM_CACHE_BUSTER_DATE=20230103
+ZLIB_LIBRARY?=$(shell find /lib /opt /usr/lib /usr -name libz.a | head -n 1)
 ZLIB_INCLUDE_DIR?=$(shell find /usr /opt -name zlib.h | head -n 1 | xargs dirname)
 PWD?=$(shell pwd)
 
@@ -47,6 +47,7 @@ $(LLVM_RELEASE_DIR)/build/CMakeCache.txt: $(LLVM_RELEASE_DIR)
 		-DLLVM_ENABLE_WARNINGS=OFF \
 		-DLLVM_ENABLE_Z3_SOLVER=OFF \
 		-DLLVM_ENABLE_ZLIB=FORCE_ON \
+		-DLLVM_ENABLE_ZSTD=OFF \
 		-DZLIB_LIBRARY="$(ZLIB_LIBRARY)" \
 		-DZLIB_INCLUDE_DIR=$(ZLIB_INCLUDE_DIR) \
 		-DLLVM_HAVE_LIBXAR=OFF \
