@@ -56,7 +56,7 @@ task:
         TRIPLE: x86_64-unknown-freebsd
         DEPS_INSTALL: "\
           pkg update && pkg install -y \
-            cmake gmake curl git llvm python3"
+            cmake gmake git llvm python3"
         # Without this next environment variable, FreeBSD will run a non-GNU
         # version of `make` that doesn't interpret our `Makefile` correctly.
         MAKE: gmake
