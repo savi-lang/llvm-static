@@ -1,4 +1,4 @@
-LLVM_VERSION=15.0.6
+LLVM_VERSION=16.0.6
 LLVM_DOWNLOAD_URL?="https://github.com/llvm/llvm-project/releases/download/llvmorg-$(LLVM_VERSION)/llvm-project-$(LLVM_VERSION).src.tar.xz"
 LLVM_BUILD_ARGS?=""
 LLVM_SOURCE_ARCHIVE=lib/llvm-$(LLVM_VERSION).src.tar.xz
