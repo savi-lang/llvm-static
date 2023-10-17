@@ -1,0 +1,17 @@
+name: Main
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - on: macos-13-large
+    runs-on: ${{ matrix.on }}
+    steps:
+      - run: echo Hello!
