@@ -1,10 +1,10 @@
-LLVM_VERSION=15.0.6
+LLVM_VERSION=18.1.8
 LLVM_DOWNLOAD_URL?="https://github.com/llvm/llvm-project/releases/download/llvmorg-$(LLVM_VERSION)/llvm-project-$(LLVM_VERSION).src.tar.xz"
 LLVM_BUILD_ARGS?=""
 LLVM_SOURCE_ARCHIVE=lib/llvm-$(LLVM_VERSION).src.tar.xz
 LLVM_RELEASE_DIR=lib/llvm-$(LLVM_VERSION)
 LLVM_INSTALL_DIR=lib/llvm
-LLVM_CACHE_BUSTER_DATE=20230103
+LLVM_CACHE_BUSTER_DATE=20240803
 ZLIB_LIBRARY?=$(shell find /lib /opt /usr/lib /usr -name libz.a | head -n 1)
 ZLIB_INCLUDE_DIR?=$(shell find /usr /opt -name zlib.h | head -n 1 | xargs dirname)
 PWD?=$(shell pwd)
